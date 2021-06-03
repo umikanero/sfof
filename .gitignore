@@ -3,3 +3,5 @@
 
 # Ignore builds
 build*
+sfof/.DS_Store
+sfof/src/.DS_Store
