@@ -37,9 +37,9 @@ bool FoF::friendship (const Zbin &zbin, const Galaxy &gal1, const Galaxy &gal2, 
   bool check1 = bin_check(zbin.num, gal2.bins);
   bool check2 = !gal2.in_cluster[zbin.num];
   double dist = astro.angsep(gal1.P, gal2.P);
-  bool check3 = dist <= rfriend;
+  bool check3 = dist <= rfriend;  //检查是否满足Distance<R_friend条件
   if (mode == "spec") {
-    bool check4 = fabs(gal1.v - gal2.v) <= (link_z / (1 + gal1.z));
+    bool check4 = fabs(gal1.v - gal2.v) <= (link_z / (1 + gal1.z)); //检查是否满足|v_2-v_1|/2<v_friend条件
     final_check = check0 && check1 && check2 && check3 && check4;
   }
   else
@@ -129,7 +129,8 @@ int FoF::friends_of_friends (int bin_num, const std::vector<Zbin> &zbin_list,
   /* Loop through galaxies */
   for(int i = 0; i < gal_list.size(); i++) {
     /* Modify rfriend for spectroscopic mode */
-    if (mode == "spec") rfriend = zbin_list[gal_list[i].bin].link_r / gal_list[i].da;
+    if (mode == "spec")
+      rfriend = zbin_list[gal_list[i].bin].link_r / gal_list[i].da;
     /* Check if galaxy is already in a cluster (f-loop) */
     if(!gal_list[i].in_cluster[zbin.num] && bin_check(zbin.num, gal_list[i].bins)) {
       unused_nodes += find_friends(zbin, gal_list[i], rfriend, gal_list, tree);

@@ -124,7 +124,7 @@ public:
    * instance given a value of the expected background number density.
    * @param[in] bg_expect Background number density [n_gal / arcmin^2]
    */
-  void assign_sn (double);
+  double assign_sn (double);
 
   /**
    * This method updates the units of the cluster size to those

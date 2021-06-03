@@ -1,6 +1,9 @@
 /*Main Code*/
 
 #include "sfof.hpp"
+#include "cosmo.hpp"
+
+#include<fstream> //追加写文件
 
 void Main::read_options (int argc, char *argv[]) {
   // Function to read code options.
@@ -93,9 +96,25 @@ void Main::assign_linking_param () {
     std::cout<<"Printing redshift bin data to "<<z_bin_data.str()<<"."<<std::endl;
     std::ofstream zbin_out(z_bin_data.str());
     zbin_out<<"#Num[1] Z[2] Link_R[3] R_Friend[4] Count[5]"<<std::endl;
-    for(int i = 0; i < num_bins; i++)
+    for(int i = 0; i < num_bins; i++){
       zbin_out<<zbins[i].num<<" "<<zbins[i].z<<" "<<zbins[i].link_r<<" "
 	       <<zbins[i].rfriend<<" "<<zbins[i].count<<std::endl;
+      /* 计算并输出z=0.5处的r_friend(Mpc) */
+      if(zbins[i].z == 0.5){
+        Cosmo cosmo;
+        double distance_test = ((opt.c / opt.H0) * cosmo.angdidis(zbins[i].z)); //cosmo.angdidis
+        /* r_friend(z=0.5)的单位为Mpc h^-1*/
+        // double r_friend_test = astro.deg2rad(zbins[i].rfriend) * distance_test * opt.H0 / 100; //此处rfriend为deg单位
+        double r_friend_test = zbins[i].rfriend * distance_test * opt.H0 / 100;
+        double v_friend_test = (opt.link_z * opt.c / (2 + 2 * zbins[i].z)); //z_0 * c / 2(1+z)
+        std::cout<<"R_friend(z=0.5) = "<<r_friend_test<<" Mpc h^-1"<<std::endl;
+        std::cout<<"v_friend(z=0.5) = "<<v_friend_test<<" km / s"<<std::endl;
+        std::ofstream ofile;
+        ofile.open("LinkParameter.txt",std::ios::app);
+        ofile<<opt.link_r<<"\t"<<opt.link_z<<"\t"<<r_friend_test<<"\t"<<v_friend_test;
+        ofile.close();
+      }
+    }
     zbin_out.close();
   }
 
@@ -201,8 +220,14 @@ void Main::check_results() {
 
   if (clusters.size() > 0)
     merge_clusters();
-  else
+  else{
     std::cout<<"No clusters deteced in sample!"<<std::endl;
+    int zero = 0;
+    std::ofstream ofile;
+    ofile.open("LinkParameter.txt",std::ios::app);
+    ofile<<"\t"<<zero<<"\t"<<std::endl;
+    ofile.close();
+  }
 
 }
 
@@ -218,6 +243,13 @@ void Main::merge_clusters () {
   std::cout<<"Total clusters detected with Ngal >= "<<opt.min_ngal
 	   <<": "<<clusters.size()<<std::endl;
 
+  /* 追加写入R_0, z_0, cluster number*/
+  std::ofstream ofile;
+  ofile.open("LinkParameter.txt",std::ios::app);
+  ofile<<"\t"<<clusters.size();
+  ofile.close();
+
+
   /* Reasign cluster properties. */
   assign_cluster_props();
 
@@ -226,6 +258,7 @@ void Main::merge_clusters () {
 void Main::assign_cluster_props () {
   // Funciton that assigns cluster properties.
 
+  double total_sn = 0;
   for(int i = 0; i < clusters.size(); i++) {
     /* Remove duplicate members */
     clusters[i].unique();
@@ -235,10 +268,16 @@ void Main::assign_cluster_props () {
     if (opt.size_units == "Mpc")
       clusters[i].assign_dist(opt.c, opt.H0, opt.omega_m, opt.omega_l);
     /* Assign signal-to-noise using background density */
-    clusters[i].assign_sn(fabs(spline_bg(clusters[i].z)));
+    total_sn += clusters[i].assign_sn(fabs(spline_bg(clusters[i].z)));  //计算平均信噪比并输出
     /* Update cluster size units */
     clusters[i].update_size(opt.size_units);
   }
+
+  double average_sn = total_sn / clusters.size();
+  std::ofstream ofile;
+  ofile.open("LinkParameter.txt",std::ios::app);
+  ofile<<"\t"<<average_sn<<std::endl;
+  ofile.close();
 
   /* Sort clusters by number of members */
   std::sort(clusters.begin(), clusters.end());
@@ -248,7 +287,7 @@ void Main::assign_cluster_props () {
   for(int i = 0; i < clusters.size(); i++)
     clusters[i].rename(i + 1);
 
-  output_results();
+  // output_results();
 
 }
 

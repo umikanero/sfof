@@ -39,13 +39,13 @@ void Cluster::assign_props () {
     dec_err = astro.stderr_median(g_dec);
     z_err = astro.stderr_median(g_z);
     for(int i = 0; i < ngal; i++)
-      sum += astro.rad2deg(astro.angsep(ra, dec, g_ra[i], g_dec[i]));
-    size = (sum * 60.0) / double(ngal);
+      sum += astro.rad2deg(astro.angsep(ra, dec, g_ra[i], g_dec[i])); //此处将rad转化为了deg
+    size = (sum * 60.0) / double(ngal); //因为默认单位为arcmin，所以乘以60，原本为deg单位
     area = M_PI * pow(size, 2);
   }
 }
 
-void Cluster::assign_sn (double bg_expect) {
+double Cluster::assign_sn (double bg_expect) {
   // Assign singal-to-noise to Cluster instance
   // given the expected background counts.
   if (bg_expect < 0)
@@ -58,6 +58,8 @@ void Cluster::assign_sn (double bg_expect) {
     sn = -1.0;
   else
     sn = (double(ngal) - (area * bg_expect)) / pow((area * bg_expect), 0.5);
+
+    return sn;
 }
 
 void Cluster::update_size (const std::string size_units) {
