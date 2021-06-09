@@ -287,7 +287,8 @@ void Main::assign_cluster_props () {
   for(int i = 0; i < clusters.size(); i++)
     clusters[i].rename(i + 1);
 
-  // output_results();
+  
+  if(opt.output_option == "yes") output_results();
 
 }
 

@@ -22,6 +22,7 @@ void Option::print_parameters() {
   std::cout<<" - link_z = "<<link_z<<std::endl;
   std::cout<<" - input_mode = "<<input_mode<<std::endl;
   std::cout<<" - output_mode = "<<output_mode<<std::endl;
+  std::cout<<" - output_option = "<<output_option<<std::endl;
   std::cout<<" - fof_mode = "<<fof_mode<<std::endl;
   std::cout<<" - link_mode = "<<link_mode<<std::endl;
   std::cout<<" - size_units = "<<size_units<<std::endl;
@@ -71,6 +72,8 @@ void Option::read_opts(int argc, char *argv[], double version_number) {
      "File input mode [ascii/fits].")
     ("output_mode", po::value<std::string>(&output_mode)->default_value("ascii"),
      "File output mode [ascii/fits].")
+    ("output_option", po::value<std::string>(&output_option)->default_value("no"),
+     "File output or NOT [yes/no].")
     ("fof_mode", po::value<std::string>(&fof_mode)->default_value("phot"),
      "Friends-of-friends redshift mode [spec/phot].")
     ("link_mode", po::value<std::string>(&link_mode)->default_value("dynamic"),

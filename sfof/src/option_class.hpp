@@ -110,6 +110,9 @@ public:
   /// Output file name.
   std::string output_file;
 
+  /// Output or not.
+  std::string output_option;
+
   /// Option to print Zbin data.
   bool print_bin_data;
 
