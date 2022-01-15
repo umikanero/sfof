@@ -241,14 +241,14 @@ void Fileio::write_ascii (const std::vector<Cluster> &cluster_list,
     write_clusters<<std::setw(9)<<cluster_list[i].area<<"\n";
     for(int j = 0; j < cluster_list[i].ngal; j++) {
       write_members<<std::fixed<<std::setprecision(5);
-      write_members<<std::setw(8)<<cluster_list[i].num<<" ";
-      write_members<<std::setw(8)<<cluster_list[i].ngal<<" ";
-      write_members<<std::setw(8)<<cluster_list[i].z<<" ";
-      write_members<<std::setw(12)<<cluster_list[i].mem[j]->id<<" ";
-      write_members<<std::setw(9)<<cluster_list[i].mem[j]->P.P[0]<<" ";
-      write_members<<std::setw(9)<<std::showpos<<cluster_list[i].mem[j]->P.P[1]<<" ";
-      write_members<<std::setw(7)<<std::noshowpos<<cluster_list[i].mem[j]->z<<" ";
-      write_members<<std::setw(7)<<cluster_list[i].mem[j]->z_err<<"\n";
+      write_members<<cluster_list[i].num<<"\t";
+      write_members<<cluster_list[i].ngal<<"\t";
+      write_members<<cluster_list[i].z<<"\t";
+      write_members<<cluster_list[i].mem[j]->id<<"\t";
+      write_members<<cluster_list[i].mem[j]->P.P[0]<<"\t";
+      write_members<<std::showpos<<cluster_list[i].mem[j]->P.P[1]<<"\t";
+      write_members<<std::noshowpos<<cluster_list[i].mem[j]->z<<"\t";
+      write_members<<cluster_list[i].mem[j]->z_err<<"\n";
     }
   }
   write_clusters.close();
