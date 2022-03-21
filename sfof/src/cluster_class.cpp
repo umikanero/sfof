@@ -41,6 +41,7 @@ void Cluster::assign_props () {
     for(int i = 0; i < ngal; i++)
       sum += astro.rad2deg(astro.angsep(ra, dec, g_ra[i], g_dec[i])); //此处将rad转化为了deg
     size = (sum * 60.0) / double(ngal); //因为默认单位为arcmin，所以乘以60，原本为deg单位
+    // size 是简单地取了所有galaxy到中心的距离的平均值
     area = M_PI * pow(size, 2);
   }
 }

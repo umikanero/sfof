@@ -100,15 +100,15 @@ void Main::assign_linking_param () {
       zbin_out<<zbins[i].num<<" "<<zbins[i].z<<" "<<zbins[i].link_r<<" "
 	       <<zbins[i].rfriend<<" "<<zbins[i].count<<std::endl;
       /* 计算并输出z=0.5处的r_friend(Mpc) */
-      if(zbins[i].z == 0.5){
+      if(zbins[i].z == 0.1){
         Cosmo cosmo;
         double distance_test = ((opt.c / opt.H0) * cosmo.angdidis(zbins[i].z)); //cosmo.angdidis
         /* r_friend(z=0.5)的单位为Mpc h^-1*/
         // double r_friend_test = astro.deg2rad(zbins[i].rfriend) * distance_test * opt.H0 / 100; //此处rfriend为deg单位
         double r_friend_test = zbins[i].rfriend * distance_test * opt.H0 / 100;
         double v_friend_test = (opt.link_z * opt.c / (2 + 2 * zbins[i].z)); //z_0 * c / 2(1+z)
-        std::cout<<"R_friend(z=0.5) = "<<r_friend_test<<" Mpc h^-1"<<std::endl;
-        std::cout<<"v_friend(z=0.5) = "<<v_friend_test<<" km / s"<<std::endl;
+        std::cout<<"R_friend(z=0.1) = "<<r_friend_test<<" Mpc h^-1"<<std::endl;
+        std::cout<<"v_friend(z=0.1) = "<<v_friend_test<<" km / s"<<std::endl;
         std::ofstream ofile;
         ofile.open("LinkParameter.txt",std::ios::app);
         ofile<<opt.link_r<<"\t"<<opt.link_z<<"\t"<<r_friend_test<<"\t"<<v_friend_test;
